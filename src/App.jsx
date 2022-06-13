@@ -1,30 +1,26 @@
 import logo from './logo.svg';
 import './App.css';
-import { gql, useQuery } from '@apollo/client';
 import { Persons } from './components/Persons';
-
-const ALL_PERSONS = gql`
-  query {
-    allPersons {
-      id
-      name
-      phone
-      address {
-        street
-        city
-      }
-    }
-  }
-`;
+import { PersonForm } from './components/PersonForm';
+import { UsePersons } from './persons/custom-hooks';
+import React, { useState } from 'react';
+import { Notify } from './components/Notify';
 
 function App() {
-  const { data, loading, error } = useQuery(ALL_PERSONS);
-  console.log(data);
+  const { data, loading, error } = UsePersons();
 
-  if (error) return <span style="color :  red">{error}</span>;
+  const [errorMessage, setErrorMessage] = useState(null);
+
+  if (error) return <span style={{ color: 'red' }}>{error}</span>;
+
+  const notifyError = (message) => {
+    setErrorMessage(message);
+    setTimeout(() => setErrorMessage(null), 5000);
+  };
 
   return (
     <div className="App">
+      <Notify errorMessage={errorMessage} />
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>Hello Vite + React + GraphQl!</p>
@@ -35,6 +31,7 @@ function App() {
             <Persons persons={data.allPersons} />
           </>
         )}
+        <PersonForm notifyError={notifyError} />
       </header>
     </div>
   );

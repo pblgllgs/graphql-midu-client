@@ -1,19 +1,7 @@
+/* eslint-disable react/prop-types */
 import React, { useEffect, useState } from 'react';
-import { gql, useLazyQuery } from '@apollo/client';
-
-const FIND_PERSON = gql`
-  query findPersonByName($nameToSearch: String!) {
-    findPerson(name: $nameToSearch) {
-      name
-      id
-      phone
-      address {
-        city
-        street
-      }
-    }
-  }
-`;
+import { useLazyQuery } from '@apollo/client';
+import { FIND_PERSON } from '../persons/graphql-queries';
 
 export const Persons = ({ persons }) => {
   const [getPerson, result] = useLazyQuery(FIND_PERSON);
@@ -25,7 +13,6 @@ export const Persons = ({ persons }) => {
 
   useEffect(() => {
     if (result.data) {
-        console.log(result.data.findPerson);
       setPerson(result.data.findPerson);
     }
   }, [result]);
